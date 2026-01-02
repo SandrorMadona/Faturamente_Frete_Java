@@ -1,8 +1,9 @@
 package com.example.FaturamentoFrete.service;
 
 import com.example.FaturamentoFrete.entity.Frete;
+import com.example.FaturamentoFrete.freteDTO.FreteRequestDTO;
 import com.example.FaturamentoFrete.freteDTO.FreteResponseDTO;
-import com.example.FaturamentoFrete.freteDTO.FreteResquestDTO;
+import com.example.FaturamentoFrete.freteDTO.FreteRequestDTO;
 import com.example.FaturamentoFrete.repository.FreteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -21,8 +22,7 @@ public class FreteService {
     // =========================
     // SALVAR FRETE
     // =========================
-    public void save(FreteResquestDTO data) {
-        // cálculo do faturamento já acontece na Entity
+    public void save(FreteRequestDTO data) {
         Frete frete = new Frete(data);
         freteRepository.save(frete);
     }

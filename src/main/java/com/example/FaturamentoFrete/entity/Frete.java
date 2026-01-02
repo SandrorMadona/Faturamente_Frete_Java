@@ -1,6 +1,6 @@
 package com.example.FaturamentoFrete.entity;
 
-import com.example.FaturamentoFrete.freteDTO.FreteResquestDTO;
+import com.example.FaturamentoFrete.freteDTO.FreteRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,7 +25,7 @@ public class Frete {
     private BigDecimal pedagio;
     private BigDecimal faturamento;
 
-    public Frete(FreteResquestDTO data){
+    public Frete(FreteRequestDTO data) {
         this.rota = data.rota();
         this.valorRota = data.valorRota();
         this.data = data.data();
@@ -33,6 +33,7 @@ public class Frete {
         this.pedagio = data.pedagio();
         this.faturamento = calcularFaturamento();
     }
+
 
     // regra de negócio isolada
     private BigDecimal calcularFaturamento() {

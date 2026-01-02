@@ -19,10 +19,13 @@ public class FreteController {
     private FreteService freteService;
 
     // POST - salvar frete
+
+
     @PostMapping
-    public void saveFrete(@RequestBody FreteResquestDTO data) {
+    public void saveFrete(@RequestBody FreteRequestDTO data) {
         freteService.save(data);
     }
+
 
     // GET - listar todos
     @GetMapping
