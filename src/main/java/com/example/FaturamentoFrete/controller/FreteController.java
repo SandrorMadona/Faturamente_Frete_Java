@@ -1,6 +1,7 @@
 package com.example.FaturamentoFrete.controller;
 
-import com.example.FaturamentoFrete.frete.*;
+import com.example.FaturamentoFrete.freteDTO.*;
+import com.example.FaturamentoFrete.service.FreteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,26 +30,31 @@ public class FreteController {
         return freteService.getAll();
     }
 
-    // GET - por intervalo (quinzena ou qualquer período)
-    @GetMapping("/quinzena")
-    public FreteQuinzenaResponseDTO getFretesQuinzena(
-            @RequestParam int ano,
-            @RequestParam int mes,
-            @RequestParam int primeiroDia,
-            @RequestParam int ultimoDia
+    // GET - listar fretes por período
+    @GetMapping("/periodo")
+    public List<FreteResponseDTO> getPorPeriodo(
+            @RequestParam String inicio,
+            @RequestParam String fim
     ) {
-        return freteService.getByQuinzena(ano, mes, primeiroDia, ultimoDia);
-    }
-    // GET - faturamento mensal
-    @GetMapping("/mes")
-    public FreteQuinzenaResponseDTO getFretesMes(
-            @RequestParam int ano,
-            @RequestParam int mes
-    ) {
-        return freteService.getByMes(ano, mes);
+        return freteService.getPorPeriodo(
+                LocalDate.parse(inicio),
+                LocalDate.parse(fim)
+        );
     }
 
-    // GET - total mensal (sem lista)
+
+    // GET - por intervalo (quinzena ou qualquer período)
+    @GetMapping("/quinzena/total")
+    public BigDecimal getTotalQuinzena(
+            @RequestParam int ano,
+            @RequestParam int mes,
+            @RequestParam int inicio,
+            @RequestParam int fim
+    ) {
+        return freteService.getTotalQuinzena(ano, mes, inicio, fim);
+    }
+
+    // GET - faturamento mensal
     @GetMapping("/mes/total")
     public BigDecimal getTotalMes(
             @RequestParam int ano,
@@ -63,6 +69,10 @@ public class FreteController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @GetMapping("/mes/atual/total")
+    public BigDecimal getTotalMesAtual() {
+        LocalDate hoje = LocalDate.now();
+        return freteService.getTotalMes(hoje.getYear(), hoje.getMonthValue());
+    }
 
 }

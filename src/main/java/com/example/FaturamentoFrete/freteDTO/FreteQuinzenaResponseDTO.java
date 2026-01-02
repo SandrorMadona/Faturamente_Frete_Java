@@ -1,4 +1,4 @@
-package com.example.FaturamentoFrete.frete;
+package com.example.FaturamentoFrete.freteDTO;
 
 import java.math.BigDecimal;
 import java.util.List;

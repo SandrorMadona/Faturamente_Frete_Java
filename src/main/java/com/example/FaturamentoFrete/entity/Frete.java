@@ -1,5 +1,6 @@
-package com.example.FaturamentoFrete.frete;
+package com.example.FaturamentoFrete.entity;
 
+import com.example.FaturamentoFrete.freteDTO.FreteResquestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
