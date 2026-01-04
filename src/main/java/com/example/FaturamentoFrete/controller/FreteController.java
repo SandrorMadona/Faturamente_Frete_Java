@@ -31,6 +31,17 @@ public class FreteController {
     }
 
     // =========================
+    // PUT - atualiza frete
+    // =========================
+    @PutMapping("/{id}")
+    public FreteResponseDTO atualizarFrete(
+            @PathVariable Long id,
+            @RequestBody FreteRequestDTO data
+    ) {
+        return freteService.update(id, data);
+    }
+
+    // =========================
     // GET - listar todos os fretes
     // =========================
     @GetMapping

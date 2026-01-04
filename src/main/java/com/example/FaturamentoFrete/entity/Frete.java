@@ -41,4 +41,12 @@ public class Frete {
                 .subtract(combustivel)
                 .subtract(pedagio);
     }
+
+    //quando atualizar o frete esse metodo recalcula o valor do faturamento
+    public void recalcularFaturamento() {
+        this.faturamento = this.valorRota
+                .subtract(this.combustivel)
+                .subtract(this.pedagio != null ? this.pedagio : BigDecimal.ZERO);
+    }
+
 }

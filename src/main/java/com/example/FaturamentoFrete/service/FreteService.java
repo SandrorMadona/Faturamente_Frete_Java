@@ -37,6 +37,33 @@ public class FreteService {
     }
 
     // =========================
+    // ATUALIZA FRETE
+    // =========================
+    public FreteResponseDTO update(Long id, FreteRequestDTO data) {
+
+        // 1️⃣ Busca o frete existente
+        Frete frete = freteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Frete não encontrado"));
+
+        // 2️⃣ Atualiza os campos permitidos
+        frete.setRota(data.rota());
+        frete.setValorRota(data.valorRota());
+        frete.setCombustivel(data.combustivel());
+        frete.setPedagio(data.pedagio());
+        frete.setData(data.data());
+
+        // 3️⃣ Recalcula faturamento
+        frete.recalcularFaturamento();
+
+        // 4️⃣ Salva atualização
+        Frete atualizado = freteRepository.save(frete);
+
+        // 5️⃣ Retorna DTO
+        return new FreteResponseDTO(atualizado);
+    }
+
+
+    // =========================
     // DELETAR FRETE
     // =========================
     public void deleteById(Long id) {
@@ -79,7 +106,7 @@ public class FreteService {
     }
 
     // =========================
-    // MÉTODO REUTILIZÁVEL
+    // METODO REUTILIZÁVEL
     // =========================
     // Soma apenas o faturamento já salvo no banco
     private BigDecimal calcularTotalPorPeriodo(LocalDate inicio, LocalDate fim) {
