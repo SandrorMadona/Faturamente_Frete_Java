@@ -3,8 +3,8 @@ package com.example.FaturamentoFrete.service;
 import com.example.FaturamentoFrete.entity.Frete;
 import com.example.FaturamentoFrete.freteDTO.FreteRequestDTO;
 import com.example.FaturamentoFrete.freteDTO.FreteResponseDTO;
-import com.example.FaturamentoFrete.freteDTO.FreteRequestDTO;
 import com.example.FaturamentoFrete.repository.FreteRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -13,27 +13,40 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-@Service // camada de regra de negócio
+// Indica que essa classe contém regras de negócio
+@Service
 public class FreteService {
 
+    // Injeta o repositório (acesso ao banco)
     @Autowired
     private FreteRepository freteRepository;
 
     // =========================
     // SALVAR FRETE
     // =========================
-    public void save(FreteRequestDTO data) {
+    public FreteResponseDTO save(FreteRequestDTO data) {
+
+        // Cria a entidade Frete a partir do DTO
         Frete frete = new Frete(data);
-        freteRepository.save(frete);
+
+        // Salva no banco
+        Frete salvo = freteRepository.save(frete);
+
+        // Retorna DTO de resposta
+        return new FreteResponseDTO(salvo);
     }
 
     // =========================
     // DELETAR FRETE
     // =========================
     public void deleteById(Long id) {
+
+        // Verifica se o frete existe
         if (!freteRepository.existsById(id)) {
             throw new RuntimeException("Frete não encontrado com id: " + id);
         }
+
+        // Remove do banco
         freteRepository.deleteById(id);
     }
 
@@ -41,6 +54,8 @@ public class FreteService {
     // LISTAR TODOS (ordenado)
     // =========================
     public List<FreteResponseDTO> getAll() {
+
+        // Ordenação padrão
         Sort sort = Sort.by("data").descending()
                 .and(Sort.by("id").ascending());
 
@@ -66,14 +81,19 @@ public class FreteService {
     // =========================
     // MÉTODO REUTILIZÁVEL
     // =========================
+    // Soma apenas o faturamento já salvo no banco
     private BigDecimal calcularTotalPorPeriodo(LocalDate inicio, LocalDate fim) {
 
         Sort sort = Sort.by("data");
 
-        return freteRepository.findByDataBetween(inicio, fim, sort)
+        BigDecimal total = freteRepository
+                .findByDataBetween(inicio, fim, sort)
                 .stream()
                 .map(Frete::getFaturamento)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Garante que nunca retorna null
+        return total != null ? total : BigDecimal.ZERO;
     }
 
     // =========================
@@ -102,7 +122,12 @@ public class FreteService {
     // FATURAMENTO MÊS ATUAL
     // =========================
     public BigDecimal getTotalMesAtual() {
+
         LocalDate hoje = LocalDate.now();
-        return getTotalMes(hoje.getYear(), hoje.getMonthValue());
+
+        return getTotalMes(
+                hoje.getYear(),
+                hoje.getMonthValue()
+        );
     }
 }
